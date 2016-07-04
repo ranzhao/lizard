@@ -71,7 +71,17 @@ IGNORED_WORDS = set((
     'in',
     'is',
     'import',
+    'Override',
     'from',
     'do',
-    'end'
+    'end',
+    '@',
+    'this',
+    'int',
+    'long',
+    'Integer',
+    'Long',
+    'String',
+    'com',
+    'org'
     ))

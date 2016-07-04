@@ -27,9 +27,13 @@ import re
 import os
 from fnmatch import fnmatch
 import hashlib
+import csv
+import json
+
+import datetime
 
 if sys.version[0] == '2':
-    from future_builtins import map, filter  # pylint: disable=W0622, F0401
+    from future_builtins import map  # , filter  # pylint: disable=W0622, F0401
 
 try:
     from lizard_languages import languages, get_reader_for, CLikeReader
@@ -39,14 +43,14 @@ except ImportError:
 try:
     from lizard_ext import print_xml
     from lizard_ext import html_output
+    # from lizard_ext import json_output
     from lizard_ext import auto_open, auto_read
 except ImportError:
     pass
 
 VERSION = "1.12.5"
 
-DEFAULT_CCN_THRESHOLD, DEFAULT_WHITELIST, \
-    DEFAULT_MAX_FUNC_LENGTH = 15, "whitelizard.txt", 1000
+DEFAULT_DEP_THRESHOLD, DEFAULT_CCN_THRESHOLD, DEFAULT_WHITELIST, DEFAULT_MAX_FUNC_LENGTH = 20, 10, "whitelizard.txt", 250
 
 
 # pylint: disable-msg=too-many-arguments
@@ -118,6 +122,14 @@ def arg_parser(prog=None):
                         type=int,
                         dest="CCN",
                         default=DEFAULT_CCN_THRESHOLD)
+    parser.add_argument("-D", "--DEP",
+                        help='''Threshold for dependency number
+                        warning. The default value is %d.
+                        Files with DEP bigger than it will generate warning
+                        ''' % DEFAULT_DEP_THRESHOLD,
+                        type=int,
+                        dest="DEP",
+                        default=DEFAULT_DEP_THRESHOLD)
     parser.add_argument("-f", "--input_file",
                         help='''get a list of filenames from the given file
                         ''',
@@ -179,6 +191,15 @@ def arg_parser(prog=None):
                         action="store_const",
                         const=html_output,
                         dest="printer")
+    parser.add_argument("-json", "--json_file",
+                        help='''update parse result to json''',
+                        type=str,
+                        dest="json_file")
+    parser.add_argument("-csv", "--csv_file",
+                        help='''update parse result to csv
+                        ''',
+                        type=str,
+                        dest="csv_file")
     parser.add_argument("-m", "--modified",
                         help="Calculate modified cyclomatic complexity number",
                         action="append_const",
@@ -218,6 +239,7 @@ class Nesting(object):  # pylint: disable=R0903
     '''
     Nesting represent one level of nesting in any programming language.
     '''
+
     @property
     def name_in_space(self):
         return ''
@@ -295,6 +317,7 @@ class FileInformation(object):  # pylint: disable=R0903
         self.nloc = nloc
         self.function_list = function_list or []
         self.token_count = 0
+        self.dependency_list = []
 
     average_nloc = property(lambda self: self.functions_average("nloc"))
     average_token_count = property(
@@ -314,7 +337,6 @@ class FileInformation(object):  # pylint: disable=R0903
 
 
 class NestingStack(object):
-
     def __init__(self):
         self.nesting_stack = []
         self.pending_function = None
@@ -382,8 +404,8 @@ class FileInfoBuilder(object):
             endline = self.current_function.end_line
             self.end_of_function()
             self.current_function = (
-                    self._nesting_stack.last_function or
-                    self.global_pseudo_function)
+                self._nesting_stack.last_function or
+                self.global_pseudo_function)
             self.current_function.end_line = endline
 
     def add_nloc(self, count):
@@ -429,6 +451,9 @@ class FileInfoBuilder(object):
             self.fileinfo.function_list.append(self.current_function)
         self.forgive = False
         self.current_function = self.global_pseudo_function
+
+    def add_dependency(self, dependency):
+        self.fileinfo.dependency_list.append(dependency)
 
 
 def preprocessing(tokens, reader):
@@ -547,7 +572,7 @@ def whitelist_filter(warnings, script=None, whitelist=None):
             return open(whitelist, mode='r').read()
         elif whitelist != DEFAULT_WHITELIST:
             print("WARNING: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print("WARNING: the whitelist \""+whitelist+"\" doesn't exist.")
+            print("WARNING: the whitelist \"" + whitelist + "\" doesn't exist.")
         return ''
 
     if not script:
@@ -587,31 +612,32 @@ class OutputScheme(object):
     def __init__(self, ext):
         self.extensions = ext
         self.items = [
-            {
-                'caption': "  NLOC  ", 'value': "nloc",
-                'avg_caption': ' Avg.NLOC '},
-            {
-                'caption': "  CCN  ", 'value': "cyclomatic_complexity",
-                'avg_caption': ' AvgCCN '},
-            {
-                'caption': " token ", 'value': "token_count",
-                'avg_caption': ' Avg.token '},
-            {'caption': " PARAM ", 'value': "parameter_count"},
-            {'caption': " length ", 'value': "length"},
-            ] + [
-            {
-                'caption': caption,
-                'value': part,
-                'avg_caption': average,
-                'regression': regression
-            }
-            for caption, part, average, regression in self._ext_member_info()]
+                         {
+                             'caption': "  NLOC  ", 'value': "nloc",
+                             'avg_caption': ' Avg.NLOC '},
+                         {
+                             'caption': "  CCN  ", 'value': "cyclomatic_complexity",
+                             'avg_caption': ' AvgCCN '},
+                         {
+                             'caption': " token ", 'value': "token_count",
+                             'avg_caption': ' Avg.token '},
+                         {'caption': " PARAM ", 'value': "parameter_count"},
+                         {'caption': " length ", 'value': "length"},
+                     ] + [
+                         {
+                             'caption': caption,
+                             'value': part,
+                             'avg_caption': average,
+                             'regression': regression
+                         }
+                         for caption, part, average, regression in self._ext_member_info()]
         self.items.append({'caption': " location  ", 'value': 'location'})
 
     def patch_for_extensions(self):
         def _patch(name):
             setattr(FileInformation, "average_" + name,
                     property(lambda self: self.functions_average(name)))
+
         for item in self.items:
             if 'avg_caption' in item:
                 _patch(item["value"])
@@ -653,24 +679,24 @@ class OutputScheme(object):
 
     def average_captions(self):
         return "".join([
-            e['avg_caption'] for e in self.items
-            if e.get("avg_caption", None)])
+                           e['avg_caption'] for e in self.items
+                           if e.get("avg_caption", None)])
 
     def average_formatter(self):
         return "".join([
-            "{{module.average_{ext[value]}:{size}.1f}}"
-            .format(ext=e, size=len(e['avg_caption']))
-            for e in self.items
-            if e.get("avg_caption", None)])
+                           "{{module.average_{ext[value]}:{size}.1f}}"
+                       .format(ext=e, size=len(e['avg_caption']))
+                           for e in self.items
+                           if e.get("avg_caption", None)])
 
     def clang_warning_format(self):
         return (
             "{f.filename}:{f.start_line}: warning: {f.name} has " +
             ", ".join([
-                "{{f.{ext[value]}}} {caption}"
-                .format(ext=e, caption=e['caption'].strip())
-                for e in self.items[:-1]
-                ]))
+                          "{{f.{ext[value]}}} {caption}"
+                      .format(ext=e, caption=e['caption'].strip())
+                          for e in self.items[:-1]
+                          ]))
 
 
 def print_warnings(option, scheme, warnings):
@@ -695,24 +721,24 @@ def print_total(warning_count, warning_nloc, saved_result, scheme):
     cnt = len(all_fun) or 1
     nloc_in_functions = sum([f.nloc for f in all_fun]) or 1
     all_in_one = FileInformation(
-            "",
-            sum([f.nloc for f in file_infos]),
-            all_fun)
+        "",
+        sum([f.nloc for f in file_infos]),
+        all_fun)
 
     print("=" * 90)
     print("Total nloc  " + scheme.average_captions() + "  Fun Cnt  Warning"
-          " cnt   Fun Rt   nloc Rt")
+                                                       " cnt   Fun Rt   nloc Rt")
     print("-" * 90)
     print((
         "{module.nloc:10d}" +
         scheme.average_formatter() +
         "{function_count:9d}{warning_count:13d}" +
         "{function_rate:10.2f}{nloc_rate:8.2f}").format(
-                  module=all_in_one,
-                  function_count=cnt,
-                  warning_count=warning_count,
-                  function_rate=(warning_count/cnt),
-                  nloc_rate=(warning_nloc/nloc_in_functions)))
+        module=all_in_one,
+        function_count=cnt,
+        warning_count=warning_count,
+        function_rate=(warning_count / cnt),
+        nloc_rate=(warning_nloc / nloc_in_functions)))
 
 
 def print_and_save_modules(all_fileinfos, extensions, scheme):
@@ -757,6 +783,60 @@ def get_warnings(code_infos, option):
     return warnings
 
 
+def save_csv(result, option):
+
+    def max_ccn(f):
+        cyclomatic_complexities = list(func.cyclomatic_complexity for func in f.function_list)
+        return 0 if (cyclomatic_complexities == []) else max(cyclomatic_complexities)
+
+    result = filter(lambda f: f.function_list != [], result)
+    total_files_count = len(result)
+    nloc_unhealthy_files = filter(lambda f: f.nloc > option.length, result)
+    fanout_unhealthy_files = filter(lambda f: len(f.dependency_list) > option.DEP, result)
+    ccn_unhealthy_files = list(ccn for ccn in map(max_ccn, result) if ccn > option.CCN)
+
+    avg_nloc_serverity = sum(map(lambda f: f.nloc, nloc_unhealthy_files)) / (option.length * len(nloc_unhealthy_files)) if len(nloc_unhealthy_files) > 0 else 1
+    avg_fanout_serverity = sum(map(lambda f: len(f.dependency_list), fanout_unhealthy_files)) / (option.DEP * len(fanout_unhealthy_files)) if len(fanout_unhealthy_files) > 0 else 1
+    avg_ccn_serverity = sum(ccn_unhealthy_files) / (option.CCN * len(ccn_unhealthy_files)) if len(ccn_unhealthy_files) > 0 else 1
+
+    percent_nloc_warning = len(nloc_unhealthy_files)/ total_files_count
+    percent_fanout_warning = len(fanout_unhealthy_files) / total_files_count
+    percent_ccn_warning = len(ccn_unhealthy_files) / total_files_count
+
+    # today = os.popen("git log -1 --pretty=format:'%ad' --date=short").read()
+    today = datetime.date.today().__str__()
+    try:
+        with open(option.csv_file, 'r') as f:
+            f_csv = csv.DictReader(f)
+            rows = filter(lambda r: r['date'] != today, [row for row in f_csv])
+    except IOError, e:
+        rows = []
+
+    rows.append({'date': today
+                    , 'nloc_count': len(nloc_unhealthy_files), 'nloc_index': round(avg_nloc_serverity * percent_nloc_warning, 4), 'nloc_percent': round(1 - percent_nloc_warning, 4)
+                    , 'fanout_count': len(fanout_unhealthy_files), 'fanout_index': round(avg_fanout_serverity * percent_fanout_warning, 4), 'fanout_percent': round(1 - percent_fanout_warning, 4)
+                    , 'ccn_count': len(ccn_unhealthy_files), 'ccn_index': round(avg_ccn_serverity * percent_ccn_warning, 4), 'ccn_percent': round(1 - percent_ccn_warning, 4)})
+
+    rows = sorted(rows, key=lambda r: r['date'])
+
+    header = ['date', 'nloc_count', 'nloc_index', 'nloc_percent', 'fanout_count', 'fanout_index', 'fanout_percent', 'ccn_count', 'ccn_index', 'ccn_percent']
+    with open(option.csv_file, 'w') as f:
+        f_csv = csv.DictWriter(f, header)
+        f_csv.writeheader()
+        f_csv.writerows(rows)
+
+
+def save_json(result, option):
+    result = filter(lambda f: f.function_list != [], result)
+    saved_fileinfos = []
+    for fileinfo in result:
+        method = [{'name':function.name, 'ccn':function.cyclomatic_complexity, 'start_line':function.start_line} for function in fileinfo.function_list]
+        saved_fileinfos.append({'name':fileinfo.filename, 'nloc':fileinfo.nloc, 'children':method, 'fanout':len(fileinfo.dependency_list)})
+
+    with open(option.json_file, 'w') as f:
+        f.write(json.dumps(saved_fileinfos, sort_keys=True, indent=4))
+
+
 def print_result(result, option, scheme):
     result = print_and_save_modules(result, option.extensions, scheme)
     warnings = get_warnings(result, option)
@@ -765,6 +845,12 @@ def print_result(result, option, scheme):
     for extension in option.extensions:
         if hasattr(extension, 'print_result'):
             extension.print_result()
+
+    if option.csv_file:
+        save_csv(result, option)
+    if option.json_file:
+        save_json(result, option)
+
     return warning_count
 
 
@@ -865,6 +951,7 @@ def parse_args(argv):
             if hasattr(ext, "set_args"):
                 ext.set_args(parser_to_extend)  # pylint: disable=E1101
         return parser_to_extend
+
     parser = extend_parser(arg_parser(argv[0]))
     opt = parser.parse_args(args=argv[1:])
     opt.extensions = get_extensions(opt.extensions)
@@ -877,6 +964,8 @@ def parse_args(argv):
         sys.exit(2)
     if "cyclomatic_complexity" not in opt.thresholds:
         opt.thresholds["cyclomatic_complexity"] = opt.CCN
+    # if "max_dependency" not in opt.thresholds and hasattr(opt, "DEP"):
+    #     opt.thresholds["max_dependency"] = opt.DEP
     if "max_nesting_depth" not in opt.thresholds and hasattr(opt, "ND"):
         opt.thresholds["max_nesting_depth"] = opt.ND
     if "max_nested_structures" not in opt.thresholds and hasattr(opt, "NS"):
@@ -894,9 +983,9 @@ def get_extensions(extension_names):
     def expand_extensions(existing):
         for name in extension_names:
             ext = (
-                    im('lizard_ext.lizard' + name.lower())
+                im('lizard_ext.lizard' + name.lower())
                     .LizardExtension()
-                    if isinstance(name, str) else name)
+                if isinstance(name, str) else name)
             existing.insert(
                 len(existing) if not hasattr(ext, "ordering_index") else
                 ext.ordering_index,

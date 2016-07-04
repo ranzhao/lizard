@@ -46,6 +46,9 @@ class CLikeReader(CodeReader, CCppCommentsMixin):
                     elif macro.group(1) == 'include':
                         yield "#include"
                         yield macro.group(2) or "\"\""
+                    elif macro.group(1) == 'import':
+                        yield "#import"
+                        yield macro.group(2) or "\"\""
                     for _ in macro.group(2).splitlines()[1:]:
                         yield '\n'
                 else:

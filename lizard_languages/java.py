@@ -3,6 +3,8 @@ Language parser for Java
 '''
 
 from .clike import CLikeReader, CLikeStates, CLikeNestingStackStates
+from .code_reader import CodeStateMachine
+from .ignore_dependency import IGNORED_DEPENDENCIES
 
 
 class JavaReader(CLikeReader):
@@ -27,6 +29,9 @@ class JavaStates(CLikeStates):  # pylint: disable=R0903
         if token == '@':
             self._state = self._state_decorator
             return
+        # if token == 'import':
+        #     self._state = self._imports
+        #     return
         super(JavaStates, self)._state_global(token)
 
     def _state_decorator(self, _):
@@ -38,3 +43,10 @@ class JavaStates(CLikeStates):  # pylint: disable=R0903
         else:
             self._state = self._state_global
             self._state(token)
+    #
+    # @CodeStateMachine.read_until_then(';')
+    # def _imports(self, token, saved):
+    #     if token == ';':
+    #         dependency = ''.join(filter(lambda x: x not in ['static'], saved))
+    #         if not filter(lambda x: dependency.startswith(x), IGNORED_DEPENDENCIES): self.context.add_dependency(dependency)
+    #         self._state = self._state_global
