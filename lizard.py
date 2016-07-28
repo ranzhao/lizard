@@ -813,9 +813,9 @@ def save_csv(result, option):
         rows = []
 
     rows.append({'date': today
-                    , 'nloc_count': len(nloc_unhealthy_files), 'nloc_index': round(avg_nloc_serverity * percent_nloc_warning, 4), 'nloc_percent': round(1 - percent_nloc_warning, 4)
-                    , 'fanout_count': len(fanout_unhealthy_files), 'fanout_index': round(avg_fanout_serverity * percent_fanout_warning, 4), 'fanout_percent': round(1 - percent_fanout_warning, 4)
-                    , 'ccn_count': len(ccn_unhealthy_files), 'ccn_index': round(avg_ccn_serverity * percent_ccn_warning, 4), 'ccn_percent': round(1 - percent_ccn_warning, 4)})
+                    , 'nloc_count': len(nloc_unhealthy_files), 'nloc_index': int(round(10000 * avg_nloc_serverity * percent_nloc_warning)), 'nloc_percent': round(1 - percent_nloc_warning, 4)
+                    , 'fanout_count': len(fanout_unhealthy_files), 'fanout_index': int(round(10000 * avg_fanout_serverity * percent_fanout_warning)), 'fanout_percent': round(1 - percent_fanout_warning, 4)
+                    , 'ccn_count': len(ccn_unhealthy_files), 'ccn_index': int(round(10000 * avg_ccn_serverity * percent_ccn_warning)), 'ccn_percent': round(1 - percent_ccn_warning, 4)})
 
     rows = sorted(rows, key=lambda r: r['date'])
 
@@ -946,7 +946,7 @@ def parse_args(argv):
         parser = ArgumentParser(add_help=False)
         _extension_arg(parser)
         opt, _ = parser.parse_known_args(args=argv[1:])
-        extensions = get_extensions(opt.extensions)
+        extensions = get_extensions(opt)
         for ext in extensions:
             if hasattr(ext, "set_args"):
                 ext.set_args(parser_to_extend)  # pylint: disable=E1101
@@ -954,7 +954,7 @@ def parse_args(argv):
 
     parser = extend_parser(arg_parser(argv[0]))
     opt = parser.parse_args(args=argv[1:])
-    opt.extensions = get_extensions(opt.extensions)
+    opt.extensions = get_extensions(opt)
     values = OutputScheme(opt.extensions).value_columns()
     no_fields = (set(opt.sorting) | set(opt.thresholds.keys())) - set(values)
     if no_fields:
@@ -977,15 +977,15 @@ def parse_args(argv):
     return opt
 
 
-def get_extensions(extension_names):
+def get_extensions(option):
     from importlib import import_module as im
 
     def expand_extensions(existing):
-        for name in extension_names:
+        for name in option.extensions:
             ext = (
                 im('lizard_ext.lizard' + name.lower())
-                    .LizardExtension()
-                if isinstance(name, str) else name)
+                    .LizardExtension(option)
+                if isinstance(name, str) else name(option))
             existing.insert(
                 len(existing) if not hasattr(ext, "ordering_index") else
                 ext.ordering_index,
@@ -999,9 +999,6 @@ def get_extensions(extension_names):
             token_counter,
             condition_counter,
         ])
-
-
-analyze_file = FileAnalyzer(get_extensions([]))  # pylint: disable=C0103
 
 
 def lizard_main(argv):

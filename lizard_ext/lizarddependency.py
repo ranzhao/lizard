@@ -12,10 +12,9 @@ from lizard_ext.ignore_dependency import IGNORED_DEPENDENCIES
 
 class LizardExtension(object):
     ignoreList = IGNORED_WORDS
-    #match_pattern = re.compile(r"\"(\w+(/\w+){0,}\.h)\"|<(\w+(/\w+){0,}\.h)>", re.M | re.S)
     match_pattern = re.compile(r"[<\"](\w+(/\w+){0,}\.h)[>\"]", re.M | re.S)
 
-    def __init__(self):
+    def __init__(self, option=None):
         self.result = {}
         self.rut_tokens = []
 
@@ -44,19 +43,9 @@ class LizardExtension(object):
         for token in tokens:
             self._state(token)
             yield token
-    #
-    # def reduce(self, fileinfo):
-    #     '''
-    #     Combine the statistics from each file.
-    #     Because the statistics came from multiple thread tasks. This function
-    #     needs to be called to collect the combined result.
-    #     '''
-    #     if hasattr(fileinfo, "wordCount"):
-    #         for k, val in fileinfo.wordCount.items():
-    #             self.result[k] = self.result.get(k, 0) + val
-    #
-    # def print_result(self):
-    #     pass
+
+    def print_result(self):
+        pass
 
     def _state_global(self, token):
         if token == self.dependency_keyword:

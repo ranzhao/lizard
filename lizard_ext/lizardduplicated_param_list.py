@@ -20,7 +20,7 @@ class LizardExtension(ExtensionBase):
             "regression": True},
     }
 
-    def __init__(self, context=None):
+    def __init__(self, option, context=None):
         self.all_count = Counter()
         self.all_count_per_file = Counter()
         super(LizardExtension, self).__init__(context)

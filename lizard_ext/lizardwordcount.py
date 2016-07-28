@@ -16,7 +16,7 @@ class LizardExtension(object):
     HTML_FILENAME = "codecloud.html"
     ignoreList = IGNORED_WORDS
 
-    def __init__(self):
+    def __init__(self, option):
         self.result = {}
 
     @staticmethod

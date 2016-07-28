@@ -48,7 +48,7 @@ class LizardExtension(ExtensionBase):
             "regression": True}
     }
 
-    def __init__(self, context=None):
+    def __init__(self, option, context=None):
         self.all_methods = {}
         super(LizardExtension, self).__init__(context)
 
