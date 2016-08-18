@@ -17,6 +17,7 @@ class LizardExtension(object):
     def __init__(self, option=None):
         self.result = {}
         self.rut_tokens = []
+        self.br_count = 0
 
     def __call__(self, tokens, reader):
         '''
@@ -26,12 +27,14 @@ class LizardExtension(object):
 
         dependency_keywords = {
             'java': 'import',
-            'm': '#import'
+            'm': '#import',
+            'js': 'require'
         }
 
         dependency_matches = {
             'java': self._state_match_until_semicolon,
-            'm': self._state_match_next_token
+            'm': self._state_match_next_token,
+            'js': self.in_assertion
         }
 
         reader_type = reader.ext[0]
@@ -72,6 +75,26 @@ class LizardExtension(object):
             if not filter(lambda x: dependency.startswith(x), IGNORED_DEPENDENCIES): self.context.add_dependency(
                 dependency)
             self._state = self._state_global
+
+    # @staticmethod
+    def read_inside_brackets_then(brs):
+        def decorator(func):
+            def read_until_matching_brackets(self, token):
+                self.br_count += {brs[0]: 1, brs[1]: -1}.get(token, 0)
+                if self.br_count == 1 and token is not brs[0]:
+                    self.rut_tokens.append(token)
+                if self.br_count == 0:
+                    func(self, self.rut_tokens)
+                    self.rut_tokens = []
+            return read_until_matching_brackets
+        return decorator
+
+    @read_inside_brackets_then("()")
+    def in_assertion(self, saved):
+        dependency = ''.join(filter(lambda x: x not in ['static'], saved))
+        if not filter(lambda x: dependency.startswith(x), IGNORED_DEPENDENCIES): self.context.add_dependency(
+            dependency)
+        self._state = self._state_global
 
     def _state_match_next_token(self, token):
         match = self.match_pattern.match(token)
