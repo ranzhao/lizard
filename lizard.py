@@ -833,8 +833,11 @@ def save_json(result, option):
         method = [{'name':function.name, 'ccn':function.cyclomatic_complexity, 'start_line':function.start_line} for function in fileinfo.function_list]
         saved_fileinfos.append({'name':fileinfo.filename, 'nloc':fileinfo.nloc, 'children':method, 'fanout':len(fileinfo.dependency_list)})
 
+    from lizard_ext.command_executor import execute
+    branch = execute('cd %s;' % option.paths[0] + 'git rev-parse --abbrev-ref HEAD')[0]
+    line = execute('cd %s;' % option.paths[0] + 'git log --pretty=format:"%h %ad" --date=short -1')[0].split(' ')
     with open(option.json_file, 'w') as f:
-        f.write(json.dumps(saved_fileinfos, sort_keys=True, indent=4))
+        f.write(json.dumps({'branch': branch, 'date': line[1], 'commit': line[0], 'info': saved_fileinfos}, sort_keys=True, indent=4))
 
 
 def print_result(result, option, scheme):

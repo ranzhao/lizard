@@ -78,10 +78,10 @@ class LizardExtension(ExtensionBase):
 
         if self.active_files.has_key(fileinfo.filename):
             self.active_files_info.append({'file': fileinfo.filename
-                                              , 'activity': self.active_files[fileinfo.filename]
-                                              , 'nloc': fileinfo.nloc
-                                              , 'fanout': len(fileinfo.dependency_list)
-                                              , 'ccn': max_ccn(fileinfo)})
+                                      , 'activity': self.active_files[fileinfo.filename]
+                                      , 'nloc': fileinfo.nloc
+                                      , 'fanout': len(fileinfo.dependency_list)
+                                      , 'ccn': max_ccn(fileinfo)})
 
     def print_result(self):
         rows = sorted(self.active_files_info, key=lambda r: r['activity'], reverse=True)
