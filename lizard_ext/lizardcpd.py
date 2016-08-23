@@ -27,8 +27,8 @@ def cpd(path, languages, min_tokens):
                 assert len(files) > 0
                 cpd_infos.append({'lines': lines, 'tokens': tokens, 'files': files})
                 files = []
-            lines = duplication_match.group(1)
-            tokens = duplication_match.group(2)
+            lines = int(duplication_match.group(1))
+            tokens = int(duplication_match.group(2))
 
         duplication_file_match = re.match(r'^Starting at line (\d+) of (.+)', line)
         if duplication_file_match is not None:
@@ -55,10 +55,14 @@ class LizardExtension(ExtensionBase):
                             help='''update parse result to json ''',
                             type=str,
                             dest="cpd_file")
+        parser.add_argument("-tokens", "--minimum_tokens",
+                            help='''the minimum token length which should be reported as a duplicate.''',
+                            type=int,
+                            dest="cpd_tokens",
+                            default=100)
 
     def print_result(self):
-        if hasattr(self.option, 'paths'):
-            cpd_infos = cpd(self.option.paths[0], self.option.languages[0], 100)
-            if len(cpd_infos) > 0:
-                with open(self.option.cpd_file, 'w') as f:
-                    f.write(json.dumps(cpd_infos, sort_keys=True, indent=4))
+        self.option.cpd_infos = cpd(self.option.paths[0], self.option.languages[0], self.option.cpd_tokens)
+        if hasattr(self.option, 'paths') and len(self.option.cpd_infos) > 0:
+            with open(self.option.cpd_file, 'w') as f:
+                f.write(json.dumps(self.option.cpd_infos, sort_keys=True, indent=4))

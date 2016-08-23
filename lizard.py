@@ -793,15 +793,18 @@ def save_csv(result, option):
     total_files_count = len(result)
     nloc_unhealthy_files = filter(lambda f: f.nloc > option.length, result)
     fanout_unhealthy_files = filter(lambda f: len(f.dependency_list) > option.DEP, result)
-    ccn_unhealthy_files = list(ccn for ccn in map(max_ccn, result) if ccn > option.CCN)
+    ccn_unhealthy_files = [ccn for ccn in map(max_ccn, result) if ccn > option.CCN]
+    cpd_unhealthy_files = set([file['file'] for info in option.cpd_infos for file in info['files']])
 
     avg_nloc_serverity = sum(map(lambda f: f.nloc, nloc_unhealthy_files)) / (option.length * len(nloc_unhealthy_files)) if len(nloc_unhealthy_files) > 0 else 1
     avg_fanout_serverity = sum(map(lambda f: len(f.dependency_list), fanout_unhealthy_files)) / (option.DEP * len(fanout_unhealthy_files)) if len(fanout_unhealthy_files) > 0 else 1
     avg_ccn_serverity = sum(ccn_unhealthy_files) / (option.CCN * len(ccn_unhealthy_files)) if len(ccn_unhealthy_files) > 0 else 1
+    avg_cpd_serverity = sum(map(lambda info: info['tokens'], option.cpd_infos)) / (option.cpd_tokens * len(option.cpd_infos)) if len(option.cpd_infos) > 0 else 1
 
     percent_nloc_warning = len(nloc_unhealthy_files)/ total_files_count
     percent_fanout_warning = len(fanout_unhealthy_files) / total_files_count
     percent_ccn_warning = len(ccn_unhealthy_files) / total_files_count
+    percent_cpd_warning = len(cpd_unhealthy_files) / total_files_count
 
     # today = os.popen("git log -1 --pretty=format:'%ad' --date=short").read()
     today = datetime.date.today().__str__()
@@ -815,11 +818,12 @@ def save_csv(result, option):
     rows.append({'date': today
                     , 'nloc_count': len(nloc_unhealthy_files), 'nloc_index': int(round(10000 * avg_nloc_serverity * percent_nloc_warning)), 'nloc_percent': round(1 - percent_nloc_warning, 4)
                     , 'fanout_count': len(fanout_unhealthy_files), 'fanout_index': int(round(10000 * avg_fanout_serverity * percent_fanout_warning)), 'fanout_percent': round(1 - percent_fanout_warning, 4)
-                    , 'ccn_count': len(ccn_unhealthy_files), 'ccn_index': int(round(10000 * avg_ccn_serverity * percent_ccn_warning)), 'ccn_percent': round(1 - percent_ccn_warning, 4)})
+                    , 'ccn_count': len(ccn_unhealthy_files), 'ccn_index': int(round(10000 * avg_ccn_serverity * percent_ccn_warning)), 'ccn_percent': round(1 - percent_ccn_warning, 4)
+                    , 'cpd_count': len(cpd_unhealthy_files), 'cpd_index': int(round(10000 * avg_cpd_serverity * percent_cpd_warning)), 'cpd_percent': round(1 - percent_cpd_warning, 4)})
 
     rows = sorted(rows, key=lambda r: r['date'])
 
-    header = ['date', 'nloc_count', 'nloc_index', 'nloc_percent', 'fanout_count', 'fanout_index', 'fanout_percent', 'ccn_count', 'ccn_index', 'ccn_percent']
+    header = ['date', 'nloc_count', 'nloc_index', 'nloc_percent', 'fanout_count', 'fanout_index', 'fanout_percent', 'ccn_count', 'ccn_index', 'ccn_percent', 'cpd_count', 'cpd_index', 'cpd_percentt ']
     with open(option.csv_file, 'w') as f:
         f_csv = csv.DictWriter(f, header)
         f_csv.writeheader()
