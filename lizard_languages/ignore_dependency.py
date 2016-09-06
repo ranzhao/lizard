@@ -4,5 +4,8 @@
 IGNORED_DEPENDENCIES = set((
     'java.',
     'javax.',
-    'android.'
+    'android.',
+    'rx.',
+    'org.apache.',
+    'org.springframework.'
 ))

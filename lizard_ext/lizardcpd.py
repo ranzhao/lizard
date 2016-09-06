@@ -7,16 +7,17 @@ the result to an HTML file and open the browser to show it.
 '''
 import json
 import re
+from fnmatch import fnmatch
 
 from lizard_ext.command_executor import execute
 from lizard_ext.extension_base import ExtensionBase
 
 
-def cpd(path, languages, min_tokens):
+def cpd(path, languages, min_tokens, exclude_patterns):
     if not path.endswith('/'):
         path += '/'
 
-    command = 'cd %s; ~/Projects/pmd-bin-5.5.1/bin/run.sh cpd --files ./ --language %s --minimum-tokens %d' % (path, languages, min_tokens)
+    command = '~/Projects/pmd-bin-5.5.1/bin/run.sh cpd --files %s --language %s --minimum-tokens %d' % (path, languages, min_tokens)
     text = execute(command)
     cpd_infos = []
     lines, tokens, files = 0, 0, []
@@ -25,7 +26,9 @@ def cpd(path, languages, min_tokens):
         if duplication_match is not None:
             if lines > 0:
                 assert len(files) > 0
-                cpd_infos.append({'lines': lines, 'tokens': tokens, 'files': files})
+                files = filter(lambda f: all(not fnmatch(f['file'], p) for p in exclude_patterns), files)
+                if len(files) > 1:
+                    cpd_infos.append({'lines': lines, 'tokens': tokens, 'files': files})
                 files = []
             lines = int(duplication_match.group(1))
             tokens = int(duplication_match.group(2))
@@ -36,7 +39,9 @@ def cpd(path, languages, min_tokens):
 
     if lines > 0:
         assert len(files) > 0
-        cpd_infos.append({'lines': lines, 'tokens': tokens, 'files': files})
+        files = filter(lambda f: all(not fnmatch(f['file'], p) for p in exclude_patterns), files)
+        if len(files) > 1:
+            cpd_infos.append({'lines': lines, 'tokens': tokens, 'files': files})
 
     return cpd_infos
 
@@ -62,7 +67,7 @@ class LizardExtension(ExtensionBase):
                             default=100)
 
     def print_result(self):
-        self.option.cpd_infos = cpd(self.option.paths[0], self.option.languages[0], self.option.cpd_tokens)
+        self.option.cpd_infos = cpd(self.option.paths[0], self.option.languages[0], self.option.cpd_tokens, self.option.exclude)
         if hasattr(self.option, 'paths') and len(self.option.cpd_infos) > 0:
             with open(self.option.cpd_file, 'w') as f:
                 f.write(json.dumps(self.option.cpd_infos, sort_keys=True, indent=4))
