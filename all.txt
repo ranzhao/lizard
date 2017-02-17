@@ -1,0 +1,123 @@
+java android-fans /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Fans "*/application/src/*"
+java android-fans-tab /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Fans-Tab "*/application/src/*"
+java android-explore /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Explore "*/application/src/*"
+java android-explore-tab /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Explore-Tab "*/application/src/*"
+java android-my-tab /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-My-Tab "*/application/src/*"
+java android-tour /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Tour "*/application/src/*"
+java android-music /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Music "*/application/src/*"
+java android-photo /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Photo "*/application/src/*"
+java android-video /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Video "*/application/src/*"
+java android-capture /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Capture "*/application/src/*"
+java android-publish /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Publish "*/application/src/*"
+java android-address /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Address-Manager "*/application/src/*"
+java android-playerbar /Users/zhaoran/Projects/AliPlanet-Android/AliPlanet-Player-Bar "*/application/src/*"
+java android-app /Users/zhaoran/Projects/TTPod-Android/TTEntertainment "*/dex-method-counts-sources/src/*"
+java android-user /Users/zhaoran/Projects/AliMusic-Mobile/UserSystem-Android "*/app/src/*"
+java android-xiami /Users/zhaoran/Projects/xiami/v5-android "*/app/src/*"
+java android-uiframework /Users/zhaoran/Projects/AliMusic-Mobile/UIFramework-Android
+java android-uikit /Users/zhaoran/Projects/AliMusic-Mobile/UiKit-Android
+
+java music-web-lib-music-common /Users/zhaoran/Projects/AliMusic-Server/music-web-lib/music-common
+java music-web-lib-music-logging /Users/zhaoran/Projects/AliMusic-Server/music-web-lib/music-logging
+java music-web-lib-music-model /Users/zhaoran/Projects/AliMusic-Server/music-web-lib/music-model
+java music-web-lib-music-util /Users/zhaoran/Projects/AliMusic-Server/music-web-lib/music-util
+
+java ali-music-alimSearch /Users/zhaoran/Projects/AliMusic-Server/ali-music/alimSearch
+java ali-music-indexManage /Users/zhaoran/Projects/AliMusic-Server/ali-music/indexManage
+java ali-music-marketingCenter /Users/zhaoran/Projects/AliMusic-Server/ali-music/marketingCenter
+java ali-music-song-index-manager /Users/zhaoran/Projects/AliMusic-Server/ali-music/song-index-manager
+
+java alimusic-copyright-service /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-copyright-service
+java alimusic-copyright-web /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-copyright-web
+java alimusic-ic /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic_ic
+java alimusic-morder-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-morder-facade
+java alimusic-music-counter /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-music-counter
+java alimusic-music-list /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-music-list
+java alimusic-music-order /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-music-order
+java alimusic-music-service /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-music-service
+java alimusic-music-tag /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-music-tag
+java alimusic-promotion-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-promotion-facade
+java alimusic-promotion /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-promotion
+java alimusic-purview /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic_purview
+java alimusic-song /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic_song
+java alimusic-song-admin /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-song-admin
+java alimusic-song-assist /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-song-assist
+java alimusic-song-publish /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-song-publish
+java alimusic-ticket-service /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-ticket-service
+java alimusic-trade /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-trade
+java alimusic-trade-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-trade-facade
+java alimusic-uic /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-uic
+java alimusic-xiami-user /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-xiami-user
+java alimusic-xuser-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic/alimusic-xuser-facade
+
+java music-web-api-alimusic-music-jobs /Users/zhaoran/Projects/AliMusic-Server/music-web-api/alimusic-music-jobs
+java music-web-api-alimusic-planet-facade /Users/zhaoran/Projects/AliMusic-Server/music-web-api/alimusic-planet-facade
+java music-web-api-aliplanet-resource-facade /Users/zhaoran/Projects/AliMusic-Server/music-web-api/aliplanet-resource-facade
+java music-web-api-aliplanet-resource-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/aliplanet-resource-service
+java music-web-api-common-admin /Users/zhaoran/Projects/AliMusic-Server/music-web-api/common-admin
+java music-web-api-common-facade /Users/zhaoran/Projects/AliMusic-Server/music-web-api/common-facade
+java music-web-api-common-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/common-service
+java music-web-api-fans-admin /Users/zhaoran/Projects/AliMusic-Server/music-web-api/fans-admin
+java music-web-api-fans-facade /Users/zhaoran/Projects/AliMusic-Server/music-web-api/fans-facade
+java music-web-api-fans-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/fans-service
+java music-web-api-fans-data-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/fans-data-service
+java music-web-api-fans-experience-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/fans-experience-service
+java music-web-api-interaction-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/interaction-service
+java music-web-api-operationpos-manager-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/operationpos-manager-service
+java music-web-api-point-support-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/point-support-service
+java music-web-api-rank-list-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/rank-list-service
+java music-web-api-star-tour-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/star-tour-service
+java music-web-api-star-trend-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/star-trend-service
+java music-web-api-task-service /Users/zhaoran/Projects/AliMusic-Server/music-web-api/task-service
+
+java live-account-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-account-facade
+java live-account-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-account-service
+java live-admin-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-admin-facade
+java live-admin-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-admin-service
+java live-cache /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-cache
+java live-common /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-common
+java live-finance-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-finance-service
+java live-goods-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-goods-service
+java live-im-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-im-service
+java live-job /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-job
+java live-log /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-log
+java live-luckymoney-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-luckymoney-service
+java live-message-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-message-service
+java live-order-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-order-service
+java live-play-facade /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-play-facade
+java live-play-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-play-service
+java live-room-service /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-room-service
+java live-sync-data /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/alimusic-live-sync-dat
+java live-pathfinder-message /Users/zhaoran/Projects/AliMusic-Server/alimusic-liveroom/pathfinder-message
+java live-pathfinder-message-facade /Users/zhaoran/Projects/AliMusic-Server/music-web-api/pathfinder-message-facade
+
+javascript frontend-xiami-login-h5 /Users/zhaoran/Projects/AliMusic-FE/music-node/xiami-login-h5
+javascript frontend-alimusic-music-management-system /Users/zhaoran/Projects/AliMusic-FE/music-node/alimusic-music-management-system
+javascript frontend-alimusic-user-analysis /Users/zhaoran/Projects/AliMusic-FE/music-node/alimusic-user-analysis
+javascript frontend-alimusic-management-system /Users/zhaoran/Projects/AliMusic-FE/music-node/alimusic-management-system
+javascript frontend-alimusic-member /Users/zhaoran/Projects/AliMusic-FE/music-node/alimusic-member
+javascript frontend-xiami-web-node-musician /Users/zhaoran/Projects/AliMusic-FE/music-node/xiami-web-node-musician
+javascript frontend-xiami-pro-node-order /Users/zhaoran/Projects/AliMusic-FE/music-node/xiami-pro-node-order
+javascript frontend-xiami-pro-node-good /Users/zhaoran/Projects/AliMusic-FE/music-node/xiami-pro-node-good
+javascript frontend-t-service-live-ttpod /Users/zhaoran/Projects/AliMusic-FE/music-node/t-service-live-ttpod
+javascript frontend-screen-live-ttpod /Users/zhaoran/Projects/AliMusic-FE/music-node/screen-live-ttpod
+javascript frontend-sdk-h5-login /Users/zhaoran/Projects/AliMusic-FE/music-node/sdk-h5-login
+
+javascript weex-fancommunityweeklyranks /Users/zhaoran/Projects/AliMusic-Weex/planet-fancommunityweeklyranks/src
+javascript weex-fansblacklist /Users/zhaoran/Projects/AliMusic-Weex/planet-fansblacklist/src
+javascript weex-fanspersonalpage /Users/zhaoran/Projects/AliMusic-Weex/planet-fanspersonalpage/src
+javascript weex-fanspointsupport /Users/zhaoran/Projects/AliMusic-Weex/planet-fanspointsupport/src
+javascript weex-fanstourdetail /Users/zhaoran/Projects/AliMusic-Weex/planet-fanstourdetail/src
+javascript weex-illegalinforreport /Users/zhaoran/Projects/AliMusic-Weex/planet-illegalinforreport/src
+javascript weex-managergrouplist /Users/zhaoran/Projects/AliMusic-Weex/planet-managergrouplist/src
+javascript weex-replydetail /Users/zhaoran/Projects/AliMusic-Weex/planet-replydetail/src
+
+objectivec ios-app /Users/zhaoran/Projects/TTPod-iOS/TTEntertainment-iOS
+objectivec ios-kernel /Users/zhaoran/Projects/TTPod-iOS/TTKernel
+objectivec ios-user /Users/zhaoran/Projects/TTPod-iOS/TTUserSystem-iOS
+objectivec ios-fans /Users/zhaoran/Projects/AliPlanet-iOS/AliPlanet-Fans
+objectivec ios-media /Users/zhaoran/Projects/AliPlanet-iOS/AliPlanet-Media
+objectivec ios-my /Users/zhaoran/Projects/AliPlanet-iOS/AliPlanet-My
+objectivec ios-explore /Users/zhaoran/Projects/AliPlanet-iOS/AliPlanet-explore
+objectivec ios-uicomponents /Users/zhaoran/Projects/AliPlanet-iOS/AliPlanet-UIBusinessComponents
+objectivec ios-xiami /Users/zhaoran/Projects/xiami/newxiami

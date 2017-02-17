@@ -67,7 +67,10 @@ class LizardExtension(ExtensionBase):
                             default=100)
 
     def print_result(self):
-        self.option.cpd_infos = cpd(self.option.paths[0], self.option.languages[0], self.option.cpd_tokens, self.option.exclude)
+        self.option.cpd_infos = []
+        for path in self.option.paths:
+            self.option.cpd_infos += (cpd(path, self.option.languages[0], self.option.cpd_tokens, self.option.exclude))
+
         if hasattr(self.option, 'paths') and len(self.option.cpd_infos) > 0:
             with open(self.option.cpd_file, 'w') as f:
                 f.write(json.dumps(self.option.cpd_infos, sort_keys=True, indent=4))

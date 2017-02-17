@@ -14,7 +14,8 @@ from lizard_ext.extension_base import ExtensionBase
 
 LANGUAGE_EXTENSION = {'java': ['java', 'xml', 'gradle']
                 , 'objectivec': ['m', 'mm', 'h', 'c', 'cpp', 'plist', 'xib']
-                , 'javascript': ['js', 'css', 'html']}
+                , 'javascript': ['js', 'css', 'html']
+                , 'vue': ['vue', 'we']}
 
 class Activity(dict):
     def __missing__(self, key):

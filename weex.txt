@@ -1,0 +1,2 @@
+objectivec weex-native-ios /Users/zhaoran/Projects/AliMusic-Weex/AliPlanetWeex-iOS/AliPlanetWeex
+java weex-native-android /Users/zhaoran/Projects/AliMusic-Weex/AliPlanetWeex-Android

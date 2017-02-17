@@ -28,13 +28,15 @@ class LizardExtension(object):
         dependency_keywords = {
             'java': 'import',
             'm': '#import',
-            'js': 'require'
+            'js': 'require',
+            'vue': 'require'
         }
 
         dependency_matches = {
             'java': self._state_match_until_semicolon,
             'm': self._state_match_next_token,
-            'js': self.in_assertion
+            'js': self._state_match_inside_brackets,
+            'vue': self._state_match_inside_brackets
         }
 
         reader_type = reader.ext[0]
@@ -90,7 +92,7 @@ class LizardExtension(object):
         return decorator
 
     @read_inside_brackets_then("()")
-    def in_assertion(self, saved):
+    def _state_match_inside_brackets(self, saved):
         dependency = ''.join(filter(lambda x: x not in ['static'], saved))
         if not filter(lambda x: dependency.startswith(x), IGNORED_DEPENDENCIES): self.context.add_dependency(
             dependency)

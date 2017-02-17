@@ -1,8 +1,8 @@
 ''' programming languages of lizard '''
-
 from .clike import CLikeReader
 from .java import JavaReader
 from .javascript import JavaScriptReader
+from .vue import VueReader
 from .python import PythonReader
 from .objc import ObjCReader
 from .ttcn import TTCNReader
@@ -19,6 +19,7 @@ def languages():
         JavaReader,
         CSharpReader,
         JavaScriptReader,
+        VueReader,
         PythonReader,
         ObjCReader,
         TTCNReader,

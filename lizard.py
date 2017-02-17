@@ -823,7 +823,7 @@ def save_csv(result, option):
 
     rows = sorted(rows, key=lambda r: r['date'])
 
-    header = ['date', 'nloc_count', 'nloc_index', 'nloc_percent', 'fanout_count', 'fanout_index', 'fanout_percent', 'ccn_count', 'ccn_index', 'ccn_percent', 'cpd_count', 'cpd_index', 'cpd_percentt ']
+    header = ['date', 'nloc_count', 'nloc_index', 'nloc_percent', 'fanout_count', 'fanout_index', 'fanout_percent', 'ccn_count', 'ccn_index', 'ccn_percent', 'cpd_count', 'cpd_index', 'cpd_percent']
     with open(option.csv_file, 'w') as f:
         f_csv = csv.DictWriter(f, header)
         f_csv.writeheader()
